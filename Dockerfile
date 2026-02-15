@@ -1,18 +1,27 @@
-FROM node:22-alpine
+FROM node:22-bullseye-slim
 
+# Set working directory
 WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Clawdbot globally
 RUN npm install -g clawdbot@latest
 
-# Copy package files
-COPY package*.json ./
+# Create config directory
+RUN mkdir -p /root/.clawdbot
 
-# Install dependencies
-RUN npm install --production
-
-# Expose port (Railway will set PORT env variable)
+# Expose port
+ENV PORT=18789
 EXPOSE 18789
 
-# Start Clawdbot gateway
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:${PORT}/health || exit 1
+
+# Start Clawdbot
 CMD ["clawdbot", "gateway", "start"]
