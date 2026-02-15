@@ -1,14 +1,17 @@
-FROM node:22-slim
+FROM node:22-alpine
 
 WORKDIR /app
 
-# Install Clawdbot
+# Install Clawdbot globally
 RUN npm install -g clawdbot@latest
 
-# Copy any config if needed
-COPY . .
+# Copy package files
+COPY package*.json ./
 
-# Expose port
+# Install dependencies
+RUN npm install --production
+
+# Expose port (Railway will set PORT env variable)
 EXPOSE 18789
 
 # Start Clawdbot gateway
