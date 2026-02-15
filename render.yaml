@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: clawdbot-server
+    runtime: docker
+    repo: https://github.com/workchainofficial-wq/clawdbot-railway
+    region: oregon
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: ./
+    envVars:
+      - key: GOOGLE_API_KEY
+        value: AIzaSyA1UgyOFlS3OfjelvDN2-wBXyfNYg09Ioc
+      - key: NODE_ENV
+        value: production
